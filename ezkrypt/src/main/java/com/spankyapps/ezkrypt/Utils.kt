@@ -15,22 +15,44 @@
  */
 
 @file:JvmName("CryptoUtils")
-@file:JvmMultifileClass
 
 package com.spankyapps.ezkrypt
 
 import java.security.MessageDigest
+import java.security.SecureRandom
+import javax.crypto.SecretKey
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
 
 fun ByteArray.toHexString(): String? {
     return String(CharArray(this.size + 2).apply {
         for (i in this.indices) {
             val v = this@toHexString[i].toInt() and 0xFF
-            this[i * 2] = Consts.HEX_CHARS[v ushr 4]
-            this[i * 2 + 1] = Consts.HEX_CHARS[v and 0x0F]
+            this[i * 2] = Utils.HEX_CHARS[v ushr 4]
+            this[i * 2 + 1] = Utils.HEX_CHARS[v and 0x0F]
         }
     })
 }
 
 fun ByteArray.digest(digestAlgorithm: DigestAlgorithm): String? {
     return MessageDigest.getInstance(digestAlgorithm.algoName).digest(this).toHexString()
+}
+
+object Utils {
+    val KEY_DERIVATION_ITERATIONS = 1024
+    val KEY_FACTORY_ALGO = "PBKDF2WithHmacSHA1"
+    val HEX_CHARS = "0123456789ABCDEF".toCharArray()
+
+    fun generateKey(password: String, keyLengthBytes: Int, salt: ByteArray): SecretKey {
+        return SecretKeyFactory.getInstance(KEY_FACTORY_ALGO).let {
+            val keySpec = PBEKeySpec(password.toCharArray(), salt, KEY_DERIVATION_ITERATIONS, keyLengthBytes * java.lang.Byte.SIZE)
+            it.generateSecret(keySpec)
+        }
+    }
+
+    fun generateRandomBytes(length: Int): ByteArray {
+        return ByteArray(length).apply {
+            SecureRandom().nextBytes(this)
+        }
+    }
 }
