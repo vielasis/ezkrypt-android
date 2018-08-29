@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+@file:JvmName("CryptoUtils")
+@file:JvmMultifileClass
+
 package com.spankyapps.ezkrypt
 
-import javax.crypto.Cipher
-
-enum class Mode
-constructor(val mode: Int) {
-    ENCRYPT(Cipher.ENCRYPT_MODE),
-    DECRYPT(Cipher.DECRYPT_MODE)
+object Consts {
+    val KEY_DERIVATION_ITERATIONS = 1024
+    val KEY_FACTORY_ALGO = "PBKDF2WithHmacSHA1"
+    val HEX_CHARS = "0123456789ABCDEF".toCharArray()
 }

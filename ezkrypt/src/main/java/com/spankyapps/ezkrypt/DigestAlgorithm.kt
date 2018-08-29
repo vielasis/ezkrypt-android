@@ -16,10 +16,12 @@
 
 package com.spankyapps.ezkrypt
 
-import javax.crypto.Cipher
-
-enum class Mode
-constructor(val mode: Int) {
-    ENCRYPT(Cipher.ENCRYPT_MODE),
-    DECRYPT(Cipher.DECRYPT_MODE)
+enum class DigestAlgorithm
+constructor(val algoName: String) {
+    MD5("MD5"),
+    SHA1("SHA-1"),
+    SHA224("SHA-224"),
+    SHA256("SHA-256"),
+    SHA384("SHA-384"),
+    SHA512("SHA-512")
 }

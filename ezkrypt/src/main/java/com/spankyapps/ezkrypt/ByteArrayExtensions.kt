@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
+@file:JvmName("CryptoUtils")
+@file:JvmMultifileClass
+
 package com.spankyapps.ezkrypt
 
-import javax.crypto.Cipher
+import java.security.MessageDigest
 
-enum class Mode
-constructor(val mode: Int) {
-    ENCRYPT(Cipher.ENCRYPT_MODE),
-    DECRYPT(Cipher.DECRYPT_MODE)
+fun ByteArray.toHexString(): String? {
+    return String(CharArray(this.size + 2).apply {
+        for (i in this.indices) {
+            val v = this@toHexString[i].toInt() and 0xFF
+            this[i * 2] = Consts.HEX_CHARS[v ushr 4]
+            this[i * 2 + 1] = Consts.HEX_CHARS[v and 0x0F]
+        }
+    })
+}
+
+fun ByteArray.digest(digestAlgorithm: DigestAlgorithm): String? {
+    return MessageDigest.getInstance(digestAlgorithm.algoName).digest(this).toHexString()
 }
